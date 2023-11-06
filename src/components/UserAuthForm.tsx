@@ -5,7 +5,7 @@ import { Button } from "./ui/Button";
 import { cn } from "@/lib/utils";
 import { signIn } from "next-auth/react";
 import { Icons } from "./Icons";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "./ui/Toast/use-toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -16,8 +16,8 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className }) => {
   const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
-      //   await signIn("google");
-        throw new Error("Something went wrong")
+        await signIn("google");
+        // throw new Error("Something went wrong")
     } catch (error) {
       console.error(error);
       //   toast notification
