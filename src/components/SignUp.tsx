@@ -1,9 +1,10 @@
 // "use client"
 
+import Link from "next/link";
 import { FC } from "react";
 import { Icons } from "./Icons";
-import Link from "next/link";
 import UserAuthForm from "./UserAuthForm";
+
 const SignUp: FC = () => {
   return (
     <div className="container mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
