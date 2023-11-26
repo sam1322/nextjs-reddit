@@ -14,7 +14,7 @@ const UserAvatar: FC<UserAvatarProps> = ({ user, ...props }) => {
   return (
     <Avatar {...props}>
       {user.image ? (
-        <div className="relative h-6 w-6 rounded-full overflow-hidden ">
+        <div className="relative h-10 w-10 rounded-full overflow-hidden ">
           <Image
             fill
             src={user.image}

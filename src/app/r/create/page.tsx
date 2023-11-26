@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { toast } from "@/components/ui/Toast/use-toast";
-import { useCustomToast } from "@/hooks/use-custom-toast";
+import { useCustomToasts } from "@/hooks/use-custom-toast";
 import { CreateSubredditPayload } from "@/lib/validators/subreddit";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
@@ -14,7 +14,7 @@ interface pageProps {}
 const page: FC<pageProps> = ({}) => {
   const [input, setInput] = useState<string>("");
   const router = useRouter();
-  const { loginToast } = useCustomToast();
+  const { loginToast } = useCustomToasts();
 
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
