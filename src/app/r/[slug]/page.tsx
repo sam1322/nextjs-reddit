@@ -1,4 +1,5 @@
 import MiniCreatePost from "@/components/MiniCreatePost";
+import PostFeed from "@/components/PostFeed";
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from "@/config";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -37,6 +38,7 @@ const page = async ({ params }: PageProps) => {
         r/{subreddit.name}
       </h1>
       <MiniCreatePost session={session} />
+      <PostFeed initialPosts={[]} subredditName="" />
       {/* <pre>{JSON.stringify(params)}</pre> */}
     </>
   );

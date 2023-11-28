@@ -6,6 +6,10 @@ import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type EditorJS from "@editorjs/editorjs";
 import { uploadFiles } from "@/lib/uploadthing";
+import { toast } from "./ui/Toast/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
 
 interface EditorProps {
   subredditId: string;
@@ -27,12 +31,10 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
 
   const ref = useRef<EditorJS>();
   const [isMounted, setIsMounted] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsMounted(true);
-    }
-  });
+  const _titleRef = useRef(null);
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -90,25 +92,107 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMounted(true);
+    }
+  });
+
+  useEffect(() => {
     const init = async () => {
       await initializeEditor();
       setTimeout(() => {
         // ref.current.render({ blocks: [] });
+        _titleRef.current?.focus();
       });
     };
 
     if (isMounted) {
       init();
 
-      return () => {};
+      return () => {
+        ref.current?.destroy();
+        ref.current = undefined;
+      };
     }
   }, [isMounted, initializeEditor]);
 
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      for (const [_key, value] of Object.entries(errors)) {
+        toast({
+          title: "Something went wrong",
+          description: (value as { message: string }).message,
+          variant: "destructive",
+        });
+      }
+    }
+  }, [errors]);
+
+  const { mutate: createPost } = useMutation({
+    mutationFn: async ({
+      title,
+      content,
+      subredditId,
+    }: PostCreationRequest) => {
+      const payload: PostCreationRequest = {
+        title,
+        content,
+        subredditId,
+      };
+      const { data } = await axios.post("/api/subreddit/post/create", payload);
+      return data;
+    },
+    onError: (err) => {
+      return toast({
+        title: "Something went wrong",
+        description: "Your post was not published, please try again later",
+        variant: "destructive",
+      });
+    },
+    onSuccess: (data) => {
+      // r/myCommunity/submit -> /r/myCommunity
+      const newPathname = pathname.split("/").slice(0, -1).join("/");
+      router.push(newPathname);
+      router.refresh();
+      return toast({
+        // title: "Post published",
+        description: "Your post has been published",
+        // variant: "success",
+      });
+    },
+  });
+
+  async function onSubmit(data: PostCreationRequest) {
+    const blocks = await ref.current?.save();
+    const payload: PostCreationRequest = {
+      title: data.title,
+      content: blocks,
+      subredditId: subredditId,
+    };
+    createPost(payload);
+  }
+
+  if (!isMounted) {
+    return null;
+  }
+
+  const { ref: titleRef, ...rest } = register("title");
+
   return (
     <div className="w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200">
-      <form id="subreddit-post-form" className="w-fit" onSubmit={() => {}}>
+      <form
+        id="subreddit-post-form"
+        className="w-fit"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="prose prose-stone dark:prose-invert">
           <TextareaAutosize
+            ref={(e) => {
+              titleRef(e);
+              // @ts-ignore
+              _titleRef.current = e;
+            }}
+            {...rest}
             placeholder="Title"
             className="w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none"
           />
