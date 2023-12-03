@@ -1,24 +1,26 @@
 "use client";
+import { useCustomToasts } from "@/hooks/use-custom-toast";
+import { usePrevious } from "@mantine/hooks";
+import { CommentVote, VoteType } from "@prisma/client";
+import { FC, useEffect, useState } from "react";
+import { ArrowBigDown, ArrowBigUp } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import { CommentVoteRequest, PostVoteRequest } from "@/lib/validators/vote";
+import axios, { AxiosError } from "axios";
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast/use-toast";
-import { useCustomToasts } from "@/hooks/use-custom-toast";
-import { cn } from "@/lib/utils";
-import { PostVoteRequest } from "@/lib/validators/vote";
-import { usePrevious } from "@mantine/hooks";
-import { VoteType } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { ArrowBigDown, ArrowBigUp } from "lucide-react";
-import { FC, useEffect, useState } from "react";
 
-interface PostVoteClientProps {
-  postId: string;
+type PartialVote = Pick<CommentVote, "type">;
+
+interface CommentVotesProps {
+  commentId: string;
   initialVotesAmt: number;
-  initialVote?: VoteType | null;
+  initialVote?: PartialVote;
 }
 
-const PostVoteClient: FC<PostVoteClientProps> = ({
-  postId,
+const CommentVotes: FC<CommentVotesProps> = ({
+  commentId,
   initialVotesAmt,
   initialVote,
 }) => {
@@ -27,17 +29,17 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   const [currentVote, setCurrentVote] = useState(initialVote);
   const prevVote = usePrevious(currentVote);
 
-  useEffect(() => {
-    setCurrentVote(initialVote);
-  }, [initialVote]);
+  //   useEffect(() => {
+  //     setCurrentVote(initialVote);
+  //   }, [initialVote]);
 
   const { mutate: vote } = useMutation({
     mutationFn: async (voteType: VoteType) => {
-      const payload: PostVoteRequest = {
-        postId,
+      const payload: CommentVoteRequest = {
+        commentId,
         voteType,
       };
-      await axios.patch("/api/subreddit/post/vote", payload);
+      await axios.patch("/api/subreddit/post/comment/vote", payload);
     },
     onError: (err, voteType) => {
       if (voteType === "UP") {
@@ -58,18 +60,18 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
         });
       }
     },
-    onMutate: (type: VoteType) => {
+    onMutate: (type) => {
       console.log("currentVote", currentVote, type);
-      if (currentVote === type) {
+      if (currentVote?.type === type) {
         console.log("hi");
-        setCurrentVote(null);
+        setCurrentVote(undefined);
         if (type === "UP") {
           setVotesAmt((prev) => prev - 1);
         } else if (type === "DOWN") {
           setVotesAmt((prev) => prev + 1);
         }
       } else {
-        setCurrentVote(type);
+        setCurrentVote({ type });
         if (type === "UP") {
           setVotesAmt((prev) => prev + (currentVote ? 2 : 1));
         } else if (type === "DOWN") {
@@ -80,7 +82,7 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   });
 
   return (
-    <div className="flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
+    <div className="flex gap-1">
       <Button
         onClick={() => vote("UP")}
         size="sm"
@@ -89,7 +91,7 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
       >
         <ArrowBigUp
           className={cn("h-5 w-5 text-zinc-700", {
-            "text-emerald-500 fill-emerald-500": currentVote === "UP",
+            "text-emerald-500 fill-emerald-500": currentVote?.type === "UP",
           })}
         />
       </Button>
@@ -105,7 +107,7 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
       >
         <ArrowBigDown
           className={cn("h-5 w-5 text-zinc-700", {
-            "text-red-500 fill-red-500": currentVote === "DOWN",
+            "text-red-500 fill-red-500": currentVote?.type === "DOWN",
           })}
         />
       </Button>
@@ -113,4 +115,4 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   );
 };
 
-export default PostVoteClient;
+export default CommentVotes;
