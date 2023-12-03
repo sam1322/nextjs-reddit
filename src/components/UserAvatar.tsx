@@ -4,17 +4,25 @@ import Image from "next/image";
 import { FC } from "react";
 import { Icons } from "./Icons";
 import { AvatarFallback } from "./ui/Avatar";
+import { cn } from "@/lib/utils";
 
 interface UserAvatarProps extends AvatarProps {
   user: Pick<User, "name" | "image">;
+  imageClass?: string;
 }
 
 const UserAvatar: FC<UserAvatarProps> = ({ user, ...props }) => {
-  console.log(user,"user");
+  console.log(user, "user");
+  const { imageClass } = props;
   return (
     <Avatar {...props}>
       {user.image ? (
-        <div className="relative h-10 w-10 rounded-full overflow-hidden ">
+        <div
+          className={cn(
+            "relative h-full w-full rounded-full overflow-hidden ",
+            imageClass
+          )}
+        >
           <Image
             fill
             src={user.image}

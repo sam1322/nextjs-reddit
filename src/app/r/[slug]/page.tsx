@@ -25,12 +25,17 @@ const page = async ({ params }: PageProps) => {
           comments: true,
           subreddit: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
         take: INFINITE_SCROLL_PAGINATION_RESULTS,
       },
     },
   });
   console.log(subreddit, "subreddit");
+
   if (!subreddit) return notFound();
+
   return (
     <>
       {/* page */}
@@ -38,7 +43,8 @@ const page = async ({ params }: PageProps) => {
         r/{subreddit.name}
       </h1>
       <MiniCreatePost session={session} />
-      <PostFeed initialPosts={[]} subredditName="" />
+      {/* @ts-ignore */}
+      <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} />
       {/* <pre>{JSON.stringify(params)}</pre> */}
     </>
   );

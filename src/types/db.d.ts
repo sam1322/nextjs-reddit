@@ -4,5 +4,5 @@ export type ExtendedPost = Post & {
   subreddit: Subreddit;
   votes: Vote[];
   author: User;
-  commments: Comment[];
+  comments: Comment[];
 };
