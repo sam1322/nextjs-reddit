@@ -24,6 +24,7 @@ const MiniCreatePost: FC<MiniCreatePostProps> = ({ session }) => {
               name: session?.user.name,
               image: session?.user.image,
             }}
+            imageClass="w-10 h-10"
           />
           <span className="absolute bottom-6 right-0 rounded-full w-3 h-3 bg-green-500 outline outline-2 outline-white" />
         </div>
