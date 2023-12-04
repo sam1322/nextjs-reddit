@@ -3,7 +3,7 @@ import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/Toast/toaster";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 // const inter = Open_Sans({ subsets: ["latin"], display: 'swap', adjustFontFallback: false });
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 const inter2 = localFont({
   // src: "/../../public/fonts/static/Inter-Semibold.ttf",
   src: "/../../public/fonts/static/Inter-Regular.ttf",

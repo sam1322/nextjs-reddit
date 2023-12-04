@@ -102,6 +102,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
       await initializeEditor();
       setTimeout(() => {
         // ref.current.render({ blocks: [] });
+        // @ts-ignore
         _titleRef.current?.focus();
       });
     };

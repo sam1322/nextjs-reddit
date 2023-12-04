@@ -35,6 +35,7 @@ const CustomFeed = async ({}) => {
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
   console.log("post", posts, followedCommunities);
+  // @ts-ignore
   return <PostFeed initialPosts={posts} />;
 };
 

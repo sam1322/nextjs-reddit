@@ -4,7 +4,7 @@ import SignUp from "@/components/SignUp";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
 
-const page: FC = () => {
+const Page: FC = () => {
   const router = useRouter();
   return (
     <div
@@ -28,4 +28,4 @@ const page: FC = () => {
   );
 };
 
-export default page;
+export default Page;

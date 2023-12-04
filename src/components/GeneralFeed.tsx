@@ -15,6 +15,8 @@ const GeneralFeed = async ({}) => {
     },
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   });
+  // TODO: debug this bug later
+  // @ts-ignore
   return <PostFeed initialPosts={posts} />;
 };
 

@@ -3,7 +3,8 @@ import CloseModal from "@/components/CloseModal";
 import SignIn from "@/components/SignIn";
 import { FC } from "react";
 import { useRouter } from "next/navigation";
-const page: FC = () => {
+
+const Page: FC = () => {
   const router = useRouter();
   return (
     <div
@@ -27,4 +28,4 @@ const page: FC = () => {
   );
 };
 
-export default page;
+export default Page;
