@@ -42,7 +42,8 @@ const page = async ({ params }: pageProps) => {
   if (!post && !cachedPost) return notFound();
 
   return (
-    <div className="h-full flex flex-col sm:flex-row items-center sm:items-start justify-between">
+    <div className="h-full flex flex-row items-start justify-between">
+      {/*  <div className="h-full flex flex-col sm:flex-row items-center sm:items-start justify-between"> */}
       <Suspense fallback={<PostVoteShell />}>
         {/* @ts-expect-error server components*/}
         <PostVoteServer

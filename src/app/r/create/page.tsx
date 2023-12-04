@@ -11,7 +11,7 @@ import { FC, useState } from "react";
 
 interface pageProps {}
 
-const page: FC<pageProps> = ({}) => {
+const Page = ({}) => {
   const [input, setInput] = useState<string>("");
   const router = useRouter();
   const { loginToast } = useCustomToasts();
@@ -98,4 +98,4 @@ const page: FC<pageProps> = ({}) => {
   );
 };
 
-export default page;
+export default Page;

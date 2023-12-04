@@ -1,5 +1,5 @@
 "use client";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import {
   Command,
   CommandGroup,
@@ -11,9 +11,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Prisma, Subreddit } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Users } from "lucide-react";
 import debounce from "lodash.debounce";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 
 interface SearchBarProps {}
 
@@ -36,18 +37,32 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     queryKey: ["search-query"],
     // enabled: false,
   });
-  const router = useRouter();
 
   const request = debounce(async () => {
     await refetch();
-  },300);
+  }, 300);
 
   const debounceRequest = useCallback(() => {
     request();
   }, []);
 
+  const router = useRouter();
+  const commandRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+
+  useOnClickOutside(commandRef, () => {
+    setInput("");
+  });
+
+  useEffect(() => {
+    setInput("");
+  }, [pathname]);
+
   return (
-    <Command className="relative rounded-lg border max-w-lg z-50 overflow-visible">
+    <Command
+      ref={commandRef}
+      className="relative rounded-lg border max-w-lg z-50 overflow-visible"
+    >
       <CommandInput
         className="outline-none border-none focus:border-none focus:outline-none ring-0"
         placeholder="Search communities..."
@@ -67,6 +82,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
                   onSelect={(e) => {
                     router.push(`/r/${e}`);
                     router.refresh();
+                    setInput("");
                   }}
                   key={subreddit.id}
                   value={subreddit.name}

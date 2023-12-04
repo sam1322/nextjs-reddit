@@ -21,14 +21,14 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-          <UserAvatar
-            className="h-8 w-8"
-            user={{
-              name: user.name || null,
-              image: user.image || null,
-            }}
-            imageClass="h-8 w-8"
-          />
+        <UserAvatar
+          className="h-8 w-8"
+          user={{
+            name: user.name || null,
+            image: user.image || null,
+          }}
+          imageClass="h-8 w-8"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="bg-white"
@@ -52,10 +52,10 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
           <Link href="/">Feed</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/">Create Community</Link>
+          <Link href="/r/create">Create Community</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/">Settings</Link>
+          <Link href="/settings">Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
